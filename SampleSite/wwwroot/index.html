@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <title>Count World</title>
+        <style type="text/css">
+            .even { background-color: chocolate; }
+            .odd { background-color: darkolivegreen; }
+        </style>
+    </head>
+
+    <body style="background-color:lightgray; display:flex; justify-content: center;">
+        <main class="even" style="width: 300px; padding: 10px; border: 1px dotted black ">
+            <h1>Hello Click World</h1>
+            <h4>Count: <span id="counter">0</span></h4>
+            <button id="count-btn">Click Me!</button>
+        </main>
+    </body>
+
+    <script type="application/javascript">
+        const counter = document.getElementById("counter");
+        const button = document.getElementById("count-btn");
+        const main = document.getElementsByTagName("main").item(0);
+
+        let count = parseInt(counter.innerText);
+
+        button.addEventListener("click", () => {
+            counter.innerHTML = (++count) + "";
+
+            if (count%2===0) main.className = "even"
+            else main.className = "odd"
+        })
+
+        window.readyState = "complete";
+    </script>
+
+</html>
