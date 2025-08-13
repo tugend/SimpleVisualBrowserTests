@@ -12,9 +12,12 @@ public abstract class ViewClientBase : IViewClient
     private ITestOutputHelper? _output;
     protected readonly WebDriverWait Wait ;
     protected readonly ChromeDriver Driver;
+    private readonly string _benchmarksPath;
 
-    public ViewClientBase(ChromeDriver driver)
+    public ViewClientBase(ChromeDriver driver, string benchmarksPath)
     {
+        _benchmarksPath = benchmarksPath;
+
         Driver = driver;
         Wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
     }
@@ -32,7 +35,7 @@ public abstract class ViewClientBase : IViewClient
         var context = test?.DisplayName ?? throw new ApplicationException("Unknown context!");
         // <end>
 
-        var benchmark = VisualBenchmark.Init($"{context}.{name}");
+        var benchmark = VisualBenchmark.Init(_benchmarksPath, $"{context}.{name}");
         if (benchmark.IsEmpty()) benchmark.SaveAsBenchmark(screenshot);
         else await benchmark.AssertBenchmarkMatches(screenshot);
     }

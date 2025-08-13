@@ -1,16 +1,18 @@
 ﻿using System.Diagnostics;
 using Polly;
+using Polly.Retry;
 
 namespace SimpleVisualBrowserTests.Tools;
 
 public static class WebViewRunner
 {
-    public static async Task<Process> Start<T>(Uri basePath, Uri targetHealthEndpoint)
+    private const string expectedHealthResponse = "healthy";
+
+    public static async Task<Process> Start<T>(Uri targetHealthEndpoint)
     {
         var process = Process.Start(new ProcessStartInfo
         {
             FileName = ProgramPath(typeof(T)),
-            Arguments = $"--urls=\"{basePath}\"",
             WindowStyle = ProcessWindowStyle.Hidden,
             CreateNoWindow = true,
             UseShellExecute = false,
@@ -18,9 +20,9 @@ public static class WebViewRunner
             RedirectStandardOutput = true
         })!;
 
-        var isHealthy = await IsViewHealthy(targetHealthEndpoint);
+        var healthResponse = await IsViewHealthy(targetHealthEndpoint);
 
-        if (isHealthy) return process;
+        if (healthResponse.Equals(expectedHealthResponse)) return process;
 
         if (!process.HasExited)
         {
@@ -32,14 +34,29 @@ public static class WebViewRunner
 
         throw new Exception($"""
             Whoops! Process failed to start!
+                Health response
+                {healthResponse}
+                
                 Standard Output
                 {std}
         
                 Standard Error Output
                 {error}
             """);
-
     }
+
+    private static readonly ResiliencePipeline RetryPolicy = new ResiliencePipelineBuilder()
+        .AddRetry(new RetryStrategyOptions
+        {
+            Delay = TimeSpan.FromMilliseconds(10),
+            MaxRetryAttempts = 10,
+            OnRetry = arg =>
+            {
+                Console.WriteLine($"Retry {arg.AttemptNumber} {arg.Outcome.Exception?.Message ?? arg.Outcome.ToString()}");
+                return default;
+            },
+        })
+        .Build();
 
     private static string ProgramPath(Type targetType)
     {
@@ -49,28 +66,18 @@ public static class WebViewRunner
         var programToTest = $"{executablePath}{Path.DirectorySeparatorChar}{executableName}.exe";
         return programToTest;
     }
-
-    private static async Task<bool> IsViewHealthy(Uri uri)
+    private static async Task<string> IsViewHealthy(Uri uri)
     {
         try
         {
             using var client = new HttpClient();
-
-            var message = await Policy
-                .Handle<HttpRequestException>()
-                .WaitAndRetryAsync(10, _ => TimeSpan.FromMilliseconds(10), OnRetry)
-                .ExecuteAsync(() => client.GetAsync(uri));
-
+            var message =  await RetryPolicy.ExecuteAsync(async cancellationToken => await client.GetAsync(uri, cancellationToken));
             var response = await message.Content.ReadAsStringAsync();
-
-            return response.Equals("healthy");
+            return response;
         }
-        catch
+        catch (Exception ex)
         {
-            return false;
+            return ex.Message;
         }
     }
-
-    private static void OnRetry(Exception exception, TimeSpan timeSpan, int count, Context context) => 
-        Console.WriteLine($"Waiting for target view to be live. Retry count:{count}, Failure message: {exception.Message}");
 }

@@ -23,17 +23,21 @@ public class VisualBenchmark
         _benchmarkPath = benchmarkPath;
     }
 
-    public static VisualBenchmark Init(string name)
+    public static VisualBenchmark Init(string benchmarkFolder, string name)
     {
         name = name
             .Replace("\"", "")
             .Replace(":", "=")
             .Replace(" ", "");
 
-        var folder = VisualBenchmarkPath("TODO"); // TODO: VisualBenchmarkPath("WebViewTests", nameof(VisualSmokeTests));
-        var actualPath = Path.Join(folder, $"{name}.actual.png");
-        var diffPath = Path.Join(folder, $"{name}.diff.png");
-        var benchmarkPath = Path.Join(folder, $"{name}.bench.png");
+        if (!Directory.Exists(benchmarkFolder))
+        {
+            throw new NotFoundException("Benchmarks directory not found " + Path.GetFullPath(benchmarkFolder));
+        }
+
+        var actualPath = Path.Join(benchmarkFolder, $"{name}.actual.png");
+        var diffPath = Path.Join(benchmarkFolder, $"{name}.diff.png");
+        var benchmarkPath = Path.Join(benchmarkFolder, $"{name}.bench.png");
 
         return new VisualBenchmark(name, actualPath, diffPath, benchmarkPath);
     }
@@ -43,8 +47,10 @@ public class VisualBenchmark
         screenshot.SaveAsFile(_benchmarkPath);
     }
     
-    public bool IsEmpty() => 
-        !File.Exists(_benchmarkPath);
+    public bool IsEmpty()
+    {
+        return !File.Exists(_benchmarkPath);
+    }
 
     public async Task AssertBenchmarkMatches(Screenshot screenshot)
     {
@@ -76,17 +82,4 @@ public class VisualBenchmark
         using var diffMask = ImageSharpCompare.CalcDiffMaskImage(actual, expected);
         context.DrawImage(diffMask, PixelColorBlendingMode.Overlay, PixelAlphaCompositionMode.DestOver, 0.8f);
     };
-
-    private static string VisualBenchmarkPath(params string[] subPath) =>
-        TestsRootSrcPath(subPath);
-
-    private static string TestsRootSrcPath(params string[] subPath) =>
-        "C:\\Users\\tugen\\RiderProjects\\SimpleVisualBrowserTests\\SampleTests\\VisualSmokeTests";
-    // Environment
-    //     .CurrentDirectory
-    //     .Split(Path.DirectorySeparatorChar)
-    //     .TakeWhile(x => !x.Equals("TODO")) // TODO
-    //     .Concat(subPath)
-    //     .ToArray()
-    //     .Map(Path.Join);
 }

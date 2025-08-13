@@ -2,7 +2,7 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using Polly;
-// TODO: replace polly with microsoft native
+using Polly.Retry;
 using Size = System.Drawing.Size;
 
 namespace SimpleVisualBrowserTests.Tools;
@@ -21,14 +21,21 @@ public static class ChromiumRunner
             .Manage()
             .Window.Size = new Size(900, 900);
 
-        await Policy
-            .Handle<WebDriverException>()
-            .WaitAndRetryAsync(10, _ => TimeSpan.FromMilliseconds(10), OnRetry)
-            .ExecuteAsync(() => Task.Run(() => driver.Navigate().GoToUrl(gamePath)));
-        
+        await RetryPolicy.ExecuteAsync(async _ => await driver.Navigate().GoToUrlAsync(gamePath));
+
         return driver;
     }
-    
-    private static void OnRetry(Exception exception, TimeSpan timeSpan, int count, Context context) => 
-        Console.WriteLine($"Retry {count} {exception.Message}");
+
+    private static readonly ResiliencePipeline RetryPolicy = new ResiliencePipelineBuilder()
+        .AddRetry(new RetryStrategyOptions
+        {
+            Delay = TimeSpan.FromMilliseconds(10),
+            MaxRetryAttempts = 10,
+            OnRetry = arg =>
+            {
+                Console.WriteLine($"Retry {arg.AttemptNumber} {arg.Outcome.Exception?.Message ?? arg.Outcome.ToString()}");
+                return default;
+            },
+        })
+        .Build();
 }

@@ -15,7 +15,6 @@ public abstract class WebViewTestFixtureBase<TProgram, TWebViewClient> : IAsyncL
     private TWebViewClient? _client;
 
     protected abstract Uri GetTargetUrl();
-    protected abstract Uri GetBaseUrl();
     protected abstract Uri GetHealthUrl();
 
     protected abstract IViewClientFactory<TWebViewClient> ViewClientFactory { get; }
@@ -26,7 +25,7 @@ public abstract class WebViewTestFixtureBase<TProgram, TWebViewClient> : IAsyncL
         try
         {
             Console.WriteLine("Starting web ui runner");
-            _process = await WebViewRunner.Start<TProgram>(GetBaseUrl(), GetHealthUrl()); // TODO: reduce to one
+            _process = await WebViewRunner.Start<TProgram>(GetHealthUrl());
 
             Console.WriteLine("Starting chromium runner");
             _driver = await ChromiumRunner.Start(GetTargetUrl());

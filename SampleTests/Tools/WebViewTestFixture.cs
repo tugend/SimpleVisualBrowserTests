@@ -8,8 +8,9 @@ namespace SampleTests.Tools;
 public sealed class WebViewTestFixture : WebViewTestFixtureBase<SampleSite.Program, ViewClient>
 {
     private const string TargetPort = "5000";
-    protected override Uri GetBaseUrl() => new($"http://localhost:{TargetPort}");
-    protected override Uri GetTargetUrl() => new(GetBaseUrl(), "/resources/index.html");
-    protected override Uri GetHealthUrl() => new(GetBaseUrl(), "/api/health");
+    private static readonly Uri BaseUrl = new($"http://localhost:{TargetPort}");
+    protected override Uri GetTargetUrl() => new(BaseUrl, "/resources/index.html");
+    protected override Uri GetHealthUrl() => new(BaseUrl, "/api/health");
+
     protected override IViewClientFactory<ViewClient> ViewClientFactory { get; } = new ViewClientFactory();
 }

@@ -7,27 +7,18 @@ using SimpleVisualBrowserTests.Tools.ViewClient;
 
 namespace SampleTests.Tools;
 
-
-// private const string TargetPort = "5000";
-// private static readonly Uri BasePath = new($"http://localhost:{TargetPort}");
-// private static readonly Uri TargetHealthEndpoint = new(BasePath, "api/health");
-
 public class ViewClientFactory : IViewClientFactory<ViewClient>
 {
     public ViewClient CreateClient(ChromeDriver driver) => new(driver);
 }
 
-public class ViewClient : ViewClientBase
+public class ViewClient(ChromeDriver driver) : ViewClientBase(driver, benchmarksPath: "../../../VisualSmokeTests")
 {
-    public ViewClient(ChromeDriver driver) : base(driver)
-    {
-    }
-
     public override LogContext Start() {
         Driver.Navigate().Refresh();
-        Wait.Until(_ => Driver.ExecuteScript("return window.readyState == 'complete'")); // TODO
+        Wait.Until(_ => Driver.ExecuteScript("return window.status == 'ready'"));
 
-        return new LogContext(PrintLogs); // TODO: return needed?
+        return new LogContext(PrintLogs);
     }
 
     public int GetCounter() =>
