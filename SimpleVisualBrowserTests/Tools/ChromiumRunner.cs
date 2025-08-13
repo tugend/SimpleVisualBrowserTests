@@ -1,5 +1,4 @@
-﻿using ObjectExtensions;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using Polly;
 using Polly.Retry;
@@ -11,9 +10,9 @@ public static class ChromiumRunner
 {
     public static async Task<ChromeDriver> Start(Uri gamePath)
     {
-        var options = new ChromeOptions()
-            .Tap(x => x.AddArgument("--headless"))
-            .Tap(x => x.SetLoggingPreference(LogType.Browser, LogLevel.All));
+        var options = new ChromeOptions();
+        options.AddArgument("--headless");
+        options.SetLoggingPreference(LogType.Browser, LogLevel.All);
         
         var driver = new ChromeDriver(options);
         

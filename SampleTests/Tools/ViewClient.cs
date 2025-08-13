@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using ObjectExtensions;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using SimpleVisualBrowserTests.Tools;
@@ -21,11 +20,11 @@ public class ViewClient(ChromeDriver driver) : ViewClientBase(driver, benchmarks
         return new LogContext(PrintLogs);
     }
 
-    public int GetCounter() =>
-        Driver
-            .FindElement(By.Id("counter"))
-            .Text
-            .Map(int.Parse);
+    public int GetCounter()
+    {
+        var counterElm = Driver.FindElement(By.Id("counter")).Text;
+        return int.Parse(counterElm);
+    }
 
     public ViewClient ClickCountButton()
     {

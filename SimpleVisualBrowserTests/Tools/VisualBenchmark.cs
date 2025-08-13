@@ -1,5 +1,4 @@
 ﻿using Codeuctivity.ImageSharpCompare;
-using ObjectExtensions;
 using OpenQA.Selenium;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -66,10 +65,8 @@ public class VisualBenchmark
             return;
         }
 
-        await actual
-            .Tap(x => x.Mutate(CreateOverlayDiff(benchmarkAsBytes, screenshotAsBytes)))
-            .Map(_ => actual.SaveAsPngAsync(_diffPath));
-        
+        actual.Mutate(CreateOverlayDiff(benchmarkAsBytes, screenshotAsBytes));
+        await actual.SaveAsPngAsync(_diffPath);
         screenshot.SaveAsFile(_actualPath);
         
         Assert.Fail($"Expected benchmark {_name} to match! Difference was {double.Round(diff.PixelErrorPercentage, 2)}%");
