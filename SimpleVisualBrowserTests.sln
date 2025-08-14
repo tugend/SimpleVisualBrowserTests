@@ -2,11 +2,13 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleVisualBrowserTests", "SimpleVisualBrowserTests\SimpleVisualBrowserTests.csproj", "{8D95FE93-055F-4A96-B21A-D10C40AAA58D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleSite", "SampleSite\SampleSite.csproj", "{6943550A-0393-46CE-8001-4B43E42D752A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSampleSite", "DotnetSampleSite\DotnetSampleSite.csproj", "{6943550A-0393-46CE-8001-4B43E42D752A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleTests", "SampleTests\SampleTests.csproj", "{CA077850-C6A6-439C-88D8-71FF64C58F37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSampleSiteTests", "DotnetSampleSiteTests\DotnetSampleSiteTests.csproj", "{CA077850-C6A6-439C-88D8-71FF64C58F37}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{50635172-E9E8-42DB-8AA0-A7C8242F6621}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeSampleSiteTests", "NodeSampleSiteTests\NodeSampleSiteTests.csproj", "{2F4CD428-A50C-4B0E-9C22-0256A1C81556}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,9 +28,14 @@ Global
 		{CA077850-C6A6-439C-88D8-71FF64C58F37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA077850-C6A6-439C-88D8-71FF64C58F37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA077850-C6A6-439C-88D8-71FF64C58F37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F4CD428-A50C-4B0E-9C22-0256A1C81556}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F4CD428-A50C-4B0E-9C22-0256A1C81556}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F4CD428-A50C-4B0E-9C22-0256A1C81556}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F4CD428-A50C-4B0E-9C22-0256A1C81556}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6943550A-0393-46CE-8001-4B43E42D752A} = {50635172-E9E8-42DB-8AA0-A7C8242F6621}
 		{CA077850-C6A6-439C-88D8-71FF64C58F37} = {50635172-E9E8-42DB-8AA0-A7C8242F6621}
+		{2F4CD428-A50C-4B0E-9C22-0256A1C81556} = {50635172-E9E8-42DB-8AA0-A7C8242F6621}
 	EndGlobalSection
 EndGlobal

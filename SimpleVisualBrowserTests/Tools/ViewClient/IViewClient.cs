@@ -4,6 +4,5 @@ namespace SimpleVisualBrowserTests.Tools.ViewClient;
 
 public interface IViewClient
 {
-    LogContext Start();
-    IViewClient Inject(ITestOutputHelper output);
+    void Inject(ITestOutputHelper output);
 }

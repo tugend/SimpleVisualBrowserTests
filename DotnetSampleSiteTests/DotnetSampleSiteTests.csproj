@@ -4,6 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>SampleSiteTests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SampleSite\SampleSite.csproj" />
+      <ProjectReference Include="..\DotnetSampleSite\DotnetSampleSite.csproj" />
       <ProjectReference Include="..\SimpleVisualBrowserTests\SimpleVisualBrowserTests.csproj" />
     </ItemGroup>
 

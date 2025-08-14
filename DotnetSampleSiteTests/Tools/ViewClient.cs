@@ -4,7 +4,7 @@ using OpenQA.Selenium.Chrome;
 using SimpleVisualBrowserTests.Tools;
 using SimpleVisualBrowserTests.Tools.ViewClient;
 
-namespace SampleTests.Tools;
+namespace SampleSiteTests.Tools;
 
 public class ViewClientFactory : IViewClientFactory<ViewClient>
 {
@@ -15,7 +15,9 @@ public class ViewClient(ChromeDriver driver) : ViewClientBase(driver, benchmarks
 {
     public override LogContext Start() {
         Driver.Navigate().Refresh();
-        Wait.Until(_ => Driver.ExecuteScript("return window.status == 'ready'"));
+
+        var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+        Wait.Until(_ => Driver.ExecuteScript("return window.status == 'ready'"), tokenSource.Token);
 
         return new LogContext(PrintLogs);
     }

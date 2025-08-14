@@ -1,14 +1,13 @@
 ﻿using FluentAssertions;
-using SampleTests.Tools;
-using SimpleVisualBrowserTests.Tools;
+using SampleSiteTests.Tools;
 using Xunit;
 using Xunit.Abstractions;
 
 // https://www.benday.com/2021/07/19/asp-net-core-integration-tests-with-selenium-webapplicationfactory/
-namespace SampleTests;
+namespace SampleSiteTests;
 
 [Collection(nameof(ViewCollection))]
-public sealed class BehaviorSmokeTests(WebViewTestFixture fixture, ITestOutputHelper outputHelper)
+public sealed class BehaviorSmokeTests(SampleSiteTestFixture fixture, ITestOutputHelper outputHelper)
 {
     private readonly ViewClient _client = fixture.Inject(outputHelper).Client;
 
@@ -24,7 +23,7 @@ public sealed class BehaviorSmokeTests(WebViewTestFixture fixture, ITestOutputHe
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task CounceOnce()
+    public async Task CounceOnce()
     {
         using var _ = _client.Start();
 

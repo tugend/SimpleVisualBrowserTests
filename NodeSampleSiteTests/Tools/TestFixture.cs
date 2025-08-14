@@ -1,16 +1,18 @@
-﻿using JetBrains.Annotations;
+﻿using System.Diagnostics;
+using JetBrains.Annotations;
 using SimpleVisualBrowserTests.Tools;
 using SimpleVisualBrowserTests.Tools.ViewClient;
 
-namespace SampleTests.Tools;
+namespace AnotherSampleSiteTests.Tools;
 
 [UsedImplicitly]
-public sealed class WebViewTestFixture : WebViewTestFixtureBase<SampleSite.Program, ViewClient>
+public sealed class TestFixture : WebViewTestFixtureBase<ViewClient>
 {
-    private const string TargetPort = "5000";
+    private const string TargetPort = "5001";
     private static readonly Uri BaseUrl = new($"http://localhost:{TargetPort}");
     protected override Uri GetTargetUrl() => new(BaseUrl, "/resources/index.html");
-    protected override Uri GetHealthUrl() => new(BaseUrl, "/api/health");
 
     protected override IViewClientFactory<ViewClient> ViewClientFactory { get; } = new ViewClientFactory();
+    protected override Task<Process> Start() => WebViewRunner.StartNode("../../../../NodeSampleSite");
+
 }

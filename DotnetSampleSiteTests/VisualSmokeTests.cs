@@ -1,13 +1,12 @@
-﻿using SampleTests.Tools;
-using SimpleVisualBrowserTests.Tools;
+﻿using SampleSiteTests.Tools;
 using Xunit;
 using Xunit.Abstractions;
 
 // https://www.benday.com/2021/07/19/asp-net-core-integration-tests-with-selenium-webapplicationfactory/
-namespace SampleTests;
+namespace SampleSiteTests;
 
 [Collection(nameof(ViewCollection))]
-public sealed class VisualSmokeTests(WebViewTestFixture fixture, ITestOutputHelper outputHelper)
+public sealed class VisualSmokeTests(SampleSiteTestFixture fixture, ITestOutputHelper outputHelper)
 {
     private readonly ViewClient _client = fixture.Inject(outputHelper).Client;
 

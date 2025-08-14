@@ -8,14 +8,13 @@ using Xunit.Abstractions;
 namespace SimpleVisualBrowserTests.Tools;
 
 [UsedImplicitly]
-public abstract class WebViewTestFixtureBase<TProgram, TWebViewClient> : IAsyncLifetime where TWebViewClient : IViewClient
+public abstract class WebViewTestFixtureBase<TWebViewClient> : IAsyncLifetime where TWebViewClient : IViewClient
 {
     private Process? _process;
     private ChromeDriver? _driver;
     private TWebViewClient? _client;
 
     protected abstract Uri GetTargetUrl();
-    protected abstract Uri GetHealthUrl();
 
     protected abstract IViewClientFactory<TWebViewClient> ViewClientFactory { get; }
     public TWebViewClient Client => _client ?? throw new ApplicationException("Fixture should have been initialized!");
@@ -25,7 +24,7 @@ public abstract class WebViewTestFixtureBase<TProgram, TWebViewClient> : IAsyncL
         try
         {
             Console.WriteLine("Starting web ui runner");
-            _process = await WebViewRunner.Start<TProgram>(GetHealthUrl());
+            _process = await Start();
 
             Console.WriteLine("Starting chromium runner");
             _driver = await ChromiumRunner.Start(GetTargetUrl());
@@ -39,7 +38,9 @@ public abstract class WebViewTestFixtureBase<TProgram, TWebViewClient> : IAsyncL
         }    
     }
 
-    public WebViewTestFixtureBase<TProgram, TWebViewClient> Inject(ITestOutputHelper output)
+    protected abstract Task<Process> Start();
+
+    public WebViewTestFixtureBase<TWebViewClient> Inject(ITestOutputHelper output)
     {
         Client.Inject(output);
         return this;

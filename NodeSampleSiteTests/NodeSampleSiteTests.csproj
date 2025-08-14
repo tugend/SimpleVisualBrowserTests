@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+        <RootNamespace>AnotherSampleSiteTests</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentAssertions" Version="8.5.0" />
+        <PackageReference Include="JetBrains.Annotations" Version="2025.2.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+        <PackageReference Include="Selenium.WebDriver" Version="4.34.0" />
+        <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="139.0.7258.6600" />
+        <PackageReference Include="xunit.extensibility.core" Version="2.9.3" />
+        <PackageReference Include="xunit.extensibility.execution" Version="2.9.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SimpleVisualBrowserTests\SimpleVisualBrowserTests.csproj" />
+    </ItemGroup>
+
+</Project>

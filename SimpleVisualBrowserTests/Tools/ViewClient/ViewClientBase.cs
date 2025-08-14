@@ -7,20 +7,11 @@ using Xunit.Sdk;
 
 namespace SimpleVisualBrowserTests.Tools.ViewClient;
 
-public abstract class ViewClientBase : IViewClient
+public abstract class ViewClientBase(ChromeDriver driver, string benchmarksPath) : IViewClient
 {
     private ITestOutputHelper? _output;
-    protected readonly WebDriverWait Wait ;
-    protected readonly ChromeDriver Driver;
-    private readonly string _benchmarksPath;
-
-    public ViewClientBase(ChromeDriver driver, string benchmarksPath)
-    {
-        _benchmarksPath = benchmarksPath;
-
-        Driver = driver;
-        Wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
-    }
+    protected readonly WebDriverWait Wait = new(driver, TimeSpan.FromMilliseconds(100));
+    protected readonly ChromeDriver Driver = driver;
 
     public abstract LogContext Start();
 
@@ -35,15 +26,14 @@ public abstract class ViewClientBase : IViewClient
         var context = test?.DisplayName ?? throw new ApplicationException("Unknown context!");
         // <end>
 
-        var benchmark = VisualBenchmark.Init(_benchmarksPath, $"{context}.{name}");
+        var benchmark = VisualBenchmark.Init(benchmarksPath, $"{context}.{name}");
         if (benchmark.IsEmpty()) benchmark.SaveAsBenchmark(screenshot);
         else await benchmark.AssertBenchmarkMatches(screenshot);
     }
 
-    public IViewClient Inject(ITestOutputHelper output)
+    public void Inject(ITestOutputHelper output)
     {
         _output = output;
-        return this;
     }
 
     protected void PrintLogs()
