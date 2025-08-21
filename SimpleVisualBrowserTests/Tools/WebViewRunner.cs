@@ -17,12 +17,12 @@ public static class WebViewRunner
         });
     }
 
-    public static async Task<Process> StartNode(string packageJsonPath)
+    public static async Task<Process> StartNode(string packageJsonPath, string command)
     {
         return await Start(new ProcessStartInfo
         {
             FileName = "cmd.exe",
-            Arguments = "/c npm run dev",
+            Arguments = $"/c {command}",
             WorkingDirectory = packageJsonPath,
             WindowStyle = ProcessWindowStyle.Hidden,
             CreateNoWindow = true,
@@ -36,19 +36,16 @@ public static class WebViewRunner
     {
         var process = Process.Start(startInfo)!;
 
-        if (process.HasExited)
-        {
-            throw new Exception($"""
-                 Whoops! Process failed to start!
-                     Standard Output
-                     {await process.StandardOutput.ReadToEndAsync()}
+        if (!process.HasExited) return process;
 
-                     Standard Error Output
-                     {await process.StandardError.ReadToEndAsync()}
-                 """);
-        }
+        throw new Exception($"""
+             Whoops! Process failed to start!
+                 Standard Output
+                 {await process.StandardOutput.ReadToEndAsync()}
 
-        return process;
+                 Standard Error Output
+                 {await process.StandardError.ReadToEndAsync()}
+             """);
     }
 
     private static string ProgramPath(Type targetType)

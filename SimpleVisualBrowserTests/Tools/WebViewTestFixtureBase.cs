@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text;
 using JetBrains.Annotations;
 using OpenQA.Selenium.Chrome;
 using SimpleVisualBrowserTests.Tools.ViewClient;
@@ -10,9 +11,10 @@ namespace SimpleVisualBrowserTests.Tools;
 [UsedImplicitly]
 public abstract class WebViewTestFixtureBase<TWebViewClient> : IAsyncLifetime where TWebViewClient : IViewClient
 {
-    private Process? _process;
+    private readonly List<Process> _processes = new();
     private ChromeDriver? _driver;
     private TWebViewClient? _client;
+    private readonly List<string> _output = new();
 
     protected abstract Uri GetTargetUrl();
 
@@ -23,8 +25,17 @@ public abstract class WebViewTestFixtureBase<TWebViewClient> : IAsyncLifetime wh
     {
         try
         {
-            Console.WriteLine("Starting web ui runner");
-            _process = await Start();
+            Console.WriteLine("Starting web ui runner processes");
+            foreach (var task in Start())
+            {
+                var process = await task;
+                process.OutputDataReceived += (sender, args) => _output.Add($"{process.ProcessName}:std: {args.Data}");
+                process.ErrorDataReceived += (sender, args) => _output.Add($"{process.ProcessName}:err: {args.Data}");
+                _processes.Add(process);
+
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+            }
 
             Console.WriteLine("Starting chromium runner");
             _driver = await ChromiumRunner.Start(GetTargetUrl());
@@ -33,12 +44,14 @@ public abstract class WebViewTestFixtureBase<TWebViewClient> : IAsyncLifetime wh
         catch (Exception)
         {
             Dispose(_driver);
-            Dispose(_process);
+            Dispose(_processes);
             throw;
         }    
     }
 
-    protected abstract Task<Process> Start();
+    protected abstract IEnumerable<Task<Process>> Start();
+
+    public IEnumerable<string> GetOutput() => _output.ToList();
 
     public WebViewTestFixtureBase<TWebViewClient> Inject(ITestOutputHelper output)
     {
@@ -51,15 +64,19 @@ public abstract class WebViewTestFixtureBase<TWebViewClient> : IAsyncLifetime wh
         disposable?.Dispose();
     }
 
-    private static void Dispose(Process? process)
+    private void Dispose(IEnumerable<Process> processes)
     {
-        process?.Kill(entireProcessTree: true);
+        foreach (var process in processes)
+        {
+            process.Kill(entireProcessTree: true);
+        }
     }
 
     public Task DisposeAsync()
     {
         Dispose(_driver);
-        Dispose(_process);
+        Dispose(_processes);
+
         return Task.CompletedTask;
     }
 }

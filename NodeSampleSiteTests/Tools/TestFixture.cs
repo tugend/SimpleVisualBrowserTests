@@ -13,6 +13,8 @@ public sealed class TestFixture : WebViewTestFixtureBase<ViewClient>
     protected override Uri GetTargetUrl() => new(BaseUrl, "/resources/index.html");
 
     protected override IViewClientFactory<ViewClient> ViewClientFactory { get; } = new ViewClientFactory();
-    protected override Task<Process> Start() => WebViewRunner.StartNode("../../../../NodeSampleSite");
+    protected override IEnumerable<Task<Process>> Start() => [
+        WebViewRunner.StartNode("../../../../NodeSampleSite", "npm run start:frontend"),
+        WebViewRunner.StartNode("../../../../NodeSampleSite", "npm run start:backend")];
 
 }

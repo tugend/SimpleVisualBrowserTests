@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite"
+    "start:frontend": "vite",
+    "start:backend": "echo 'hello from fake backend'"
   },
   "devDependencies": {
     "vite": "^7.1.2"

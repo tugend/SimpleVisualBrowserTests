@@ -19,7 +19,7 @@ No docs, but check out the sample tests in the repository for how to use.</Descr
         <RepositoryUrl>https://github.com/tugend/SimpleVisualBrowserTests</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>web,testing,visual,screenshot,e2e</PackageTags>
-        <Version>0.1.1</Version>
+        <Version>0.1.3</Version>
     </PropertyGroup>
 
     <ItemGroup>

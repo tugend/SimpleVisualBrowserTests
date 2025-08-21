@@ -16,5 +16,8 @@ public class NodeSampleProjectTests(TestFixture fixture, ITestOutputHelper outpu
             .GetCommandElmText()
             .Should()
             .Be("npm run dev");
+
+        string.Join('\n', fixture.GetOutput())
+            .Should().Contain("hello from fake backend");
     }
 }
